@@ -1,0 +1,21 @@
+type Query {
+  helloWorld: String!
+}
+
+type User {
+  id: ID!
+  name: String!
+  games: [Game!]!
+}
+
+type Game {
+  id: ID!
+  type: String!
+  players: [User!]!
+  moves: [Move!]!
+}
+
+type Move {
+  id: ID!
+  type: [Int!]!
+}

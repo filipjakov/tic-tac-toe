@@ -1,15 +1,17 @@
+import { PubSub, withFilter } from 'apollo-server-express';
 import { IResolvers } from 'graphql-tools';
-import { PubSub, withFilter, UserInputError } from 'apollo-server-express';
-import { Game, Player, Move } from './models';
 import Container from 'typedi';
-import PlayerService from './services/player.service';
-import GameService from './services/game.service';
 import { GameStatus } from './enums/game-status.enum';
 import { GameType } from './enums/game-type.enum';
+import Logger from './loaders/logger';
+import { Game, Move, Player } from './models';
 import BotService from './services/bot.service';
+import GameService from './services/game.service';
+import PlayerService from './services/player.service';
 import { mapToApolloError } from './utils/custom-error';
 
 const pubsub = new PubSub();
+const topic = 'GAME';
 
 const resolverMap: IResolvers = {
   GameType: {
@@ -42,33 +44,51 @@ const resolverMap: IResolvers = {
     },
     async games(): Promise<Game[]> {
       const gameService = Container.get(GameService);
-      return await gameService.findAll() ?? null;
+      return await gameService.findAll();
     }
   },
   Mutation: {
     async createGame(_, { type: gameType }, context): Promise<Game> {
-      const { id: playerId } = context.player as Player;
+      const { id: playerId, name } = context.player as Player;
       const gameService = Container.get(GameService);
 
       try {
-        return await gameService.create({ playerId, gameType });
+        const game = await gameService.create({ playerId, gameType });
+        Logger.info(`User ${name} created the game: ${game.id} of type: ${gameType}`);
+        return game;
       } catch (e) {
+        Logger.error(e);
+        throw mapToApolloError(e);
+      }
+    },
+    async joinGame(_, { id: gameId }, context): Promise<Game> {
+      const { id: playerId, name } = context.player as Player;
+      try {
+        const game = await Container.get(GameService).join({ playerId, gameId }) ?? null;
+        Logger.info(`User ${name} joined the game: ${gameId}`);
+
+        pubsub.publish(topic, game);
+        return game;
+      } catch (e) {
+        Logger.error(e);
         throw mapToApolloError(e);
       }
     },
     async makeMove(_, { gameId, newMove }, context): Promise<Move> {
-      const { id: playerId } = context.player as Player;
+      const { id: playerId, name } = context.player as Player;
       const gameService = Container.get(GameService);
       
       let move: Move;
 
       try {
         move = await gameService.move({ playerId, gameId, newMove });
+        Logger.info(`User ${name} made a move: ${newMove}`)
       } catch(e) {
+        Logger.error(e);
         throw mapToApolloError(e);
       }
 
-      pubsub.publish('GAME', move.game);
+      pubsub.publish(topic, move.game);
 
       if(move.game.type === GameType.SINGLE && move.game.status === GameStatus.IN_PROGRESS) {
         // Schedule bot's move after the current loop cycle
@@ -78,32 +98,19 @@ const resolverMap: IResolvers = {
           const optimalMove = await botService.findOptimalMove(gameId);
           const move = await gameService.move({ playerId: id, gameId, newMove: optimalMove });
 
-          pubsub.publish('GAME', move.game);
+          pubsub.publish(topic, move.game);
+          Logger.info(`Bot made a move: ${optimalMove}`);
         });
       } 
 
       return move;
     },
-    async joinGame(_, { id: gameId }, context): Promise<Game> {
-      const { id: playerId } = context.player as Player;
-      try {
-        const game = await Container.get(GameService).join({ playerId, gameId }) ?? null;
-
-        pubsub.publish('GAME', game);
-        return game;
-      } catch (e) {
-        throw mapToApolloError(e);
-      }
-    },
   },
   Subscription: {
     game: {
-      resolve: (payload) => {
-        console.log(payload);
-        return payload;
-      },
+      resolve: (payload) => payload,
       subscribe: withFilter(
-        () => pubsub.asyncIterator('GAME'),
+        () => pubsub.asyncIterator(topic),
         (payload: Game, { gameId }) => {
           return payload.id === parseInt(gameId);
         }

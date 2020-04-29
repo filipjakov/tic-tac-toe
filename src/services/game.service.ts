@@ -110,12 +110,17 @@ export default class GameService {
     const move = new Move();
     move.type = newMove;
     // Swap to other player
-    game.currentPlayer = (game.players.find(({ id }) => id !== playerId) as Player).id;
     move.game = game;
     move.player = player;
   
     game.status = this.checkGameStatus([...game.moves, move]);
     game.moves = [...game.moves, move];
+
+    // Set the turn for other player if game is still not over
+    // Otherwise, currentPlayer field will contain the id of the winner (current player)
+    if (game.status !== GameStatus.DONE) {
+      game.currentPlayer = (game.players.find(({ id }) => id !== playerId) as Player).id;
+    }
 
     return await this.connection.getRepository(Move).save(move);
   }

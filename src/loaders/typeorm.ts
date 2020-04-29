@@ -18,6 +18,7 @@ export default async () => {
       synchronize: config.dev
     });
 
+    // Important!
     Container.set('db.connection', connection);
   } catch (e) {
     throw new Error('Could not create connection to database!')

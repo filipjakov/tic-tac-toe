@@ -1,12 +1,12 @@
 import jwt from 'jsonwebtoken';
 import { Service } from "typedi";
 import config from "../config";
-import PlayerService from "./player.service";
+import { PlayerService } from "./player.service";
 import { Player } from '../models';
 import Logger from '../loaders/logger';
 
 @Service()
-export default class AuthService {
+export class AuthService {
   constructor(
     private playerService: PlayerService
   ) {}

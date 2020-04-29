@@ -2,7 +2,7 @@ import { celebrate, Joi } from 'celebrate';
 import { NextFunction, Request, Response, Router } from "express";
 import { Container } from "typedi";
 import Logger from "../../loaders/logger";
-import AuthService from "../../services/auth.service";
+import { AuthService } from "../../services/auth.service";
 
 const route = Router();
 

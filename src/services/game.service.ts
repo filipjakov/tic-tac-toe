@@ -6,10 +6,10 @@ import { GameType } from "../enums/game-type.enum";
 import { Game, Move, Player } from "../models";
 import { CustomError } from "../utils/custom-error";
 import BotService from "./bot.service";
-import PlayerService from "./player.service";
+import { PlayerService } from "./player.service";
 
 @Service()
-export default class GameService {
+export class GameService {
   constructor(
     @Inject("db.connection") private connection: Connection,
     public playerService: PlayerService,

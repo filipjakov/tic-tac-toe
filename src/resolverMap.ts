@@ -6,8 +6,8 @@ import { GameType } from './enums/game-type.enum';
 import Logger from './loaders/logger';
 import { Game, Move, Player } from './models';
 import BotService from './services/bot.service';
-import GameService from './services/game.service';
-import PlayerService from './services/player.service';
+import { GameService } from './services/game.service';
+import { PlayerService } from './services/player.service';
 import { mapToApolloError } from './utils/custom-error';
 
 const pubsub = new PubSub();
@@ -64,7 +64,7 @@ const resolverMap: IResolvers = {
     async joinGame(_, { id: gameId }, context): Promise<Game> {
       const { id: playerId, name } = context.player as Player;
       try {
-        const game = await Container.get(GameService).join({ playerId, gameId }) ?? null;
+        const game = await Container.get(GameService).join({ playerId, gameId });
         Logger.info(`User ${name} joined the game: ${gameId}`);
 
         pubsub.publish(topic, game);
@@ -91,7 +91,7 @@ const resolverMap: IResolvers = {
       pubsub.publish(topic, move.game);
 
       if(move.game.type === GameType.SINGLE && move.game.status === GameStatus.IN_PROGRESS) {
-        // Schedule bot's move after the current loop cycle
+        // Schedule bot's move after the current event-loop cycle
         setImmediate(async () => {
           const botService = Container.get(BotService);
           const { id } = await botService.findOrCreateBot();

@@ -1,8 +1,7 @@
 import { Inject, Service } from "typedi";
 import { Connection } from "typeorm";
 import { Game, Player } from "../models";
-import GameService from "./game.service";
-import PlayerService from "./player.service";
+import { PlayerService } from "./player.service";
 
 @Service()
 export default class BotService {
@@ -10,8 +9,7 @@ export default class BotService {
 
   constructor(
     @Inject("db.connection") private connection: Connection,
-    public playerService: PlayerService,
-    public gameService: GameService
+    public playerService: PlayerService
   ) {}
 
   public async findOrCreateBot(): Promise<Player> {

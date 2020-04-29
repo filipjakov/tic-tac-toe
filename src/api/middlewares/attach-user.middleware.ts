@@ -1,7 +1,7 @@
 import { NextFunction, Response } from 'express';
 import { Container } from 'typedi';
 import Logger from '../../loaders/logger';
-import PlayerService from '../../services/player.service';
+import { PlayerService } from '../../services/player.service';
 
 const attachUser = async (req: any, res: Response, next: NextFunction) => {
   try {

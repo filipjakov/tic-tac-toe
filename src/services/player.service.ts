@@ -3,7 +3,7 @@ import { Connection } from "typeorm";
 import { Player } from "../models";
 
 @Service()
-export default class PlayerService {
+export class PlayerService {
   constructor(
     @Inject("db.connection") private connection: Connection
   ) {}

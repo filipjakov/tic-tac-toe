@@ -3,8 +3,10 @@ import compression from 'compression';
 import cors from 'cors';
 import express from 'express';
 import routes from '../api';
+import Helmet from 'helmet';
 
 export default async ({ app }: { app: express.Application }) => {
+  app.use(Helmet());
   app.get('/status', (_, res) => res.status(200).end());
   app.head('/status', (_, res) => res.status(200).end());
 

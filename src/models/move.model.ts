@@ -1,5 +1,6 @@
-import { BaseEntity, PrimaryGeneratedColumn, ManyToMany, Entity, Column, OneToMany, ManyToOne } from "typeorm";
+import { BaseEntity, PrimaryGeneratedColumn, Entity, Column, ManyToOne, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { Game } from "./game.model";
+import { Player } from "./player.model";
 
 @Entity({
   orderBy: {
@@ -14,6 +15,15 @@ import { Game } from "./game.model";
   @Column()
   public type!: number;
 
-  @ManyToOne(_ => Game, game => game.moves)
+  @ManyToOne(_ => Player)
+  public player!: Player;
+
+  @ManyToOne(_ => Game, game => game.moves, { cascade: true })
   public game!: Game;
+
+  @CreateDateColumn()
+  public created_at!: Date;
+
+  @UpdateDateColumn()
+  public updated_at!: Date;
 }

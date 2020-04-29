@@ -1,11 +1,10 @@
 import { Container } from 'typedi';
 import { Request, Response, NextFunction } from 'express';
-import UserService from '../../services/user.service';
+import PlayerService from '../../services/player.service';
 
 const attachUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userService = Container.get(UserService);
-    const user = await userService.find((req as any)['token._id'] as string);
+    const user = await Container.get(PlayerService).find((req as any)['token._id'] as number);
 
     if (!user) {
       return res.sendStatus(401);

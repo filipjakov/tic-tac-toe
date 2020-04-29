@@ -18,8 +18,8 @@ export default (app: Router) => {
     async (req: Request, res: Response, next: NextFunction) => {
       try {
         const authService = Container.get(AuthService);
-        const { user, token } = await authService.signUp({ name: req.body.name });
-        return res.status(201).json({ name: user.name, token });
+        const { player, token } = await authService.signUp({ name: req.body.name });
+        return res.status(201).json({ name: player.name, token });
       } catch (e) {
         console.error(e);
         return next(e);

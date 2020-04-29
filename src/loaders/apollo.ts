@@ -1,54 +1,61 @@
 import { ApolloServer, AuthenticationError } from 'apollo-server-express';
-import schema from '../schema';
 import { Application } from 'express';
 import depthLimit from 'graphql-depth-limit';
+import { createServer } from 'http';
+import Container from 'typedi';
 import config from '../config';
-import isAuth from '../api/middlewares/is-auth.middleware';
-import attachUser from '../api/middlewares/attach-user.middleware';
-import http from 'http';
+import schema from '../schema';
+import AuthService from '../services/auth.service';
 
 export default async ({ app }: { app: Application }) => {
   const server = new ApolloServer({
     schema,
     validationRules: [depthLimit(5)],
     playground: config.dev,
-    // Previous middleware sets the user
-    context: ({ req }) => {
-      const user = (req as any).currentUser;
-
-      if(!user) {
-        throw new AuthenticationError('Can only access if signed-up!');
+    introspection: config.dev,
+    debug: config.dev,
+    context: async ({ req, connection }) => {
+      // WS auth
+      if (connection) {
+        return connection.context;
       }
-      return { user };
+
+      // HTTP Auth
+      const token = req.headers.authorization?.split(' ')[1] as string;
+      const player = await Container.get(AuthService).findUser(token);
+
+      if (!player) {
+        throw new AuthenticationError(`Can't parse token! Please sign-up!`)
+      }
+      return { player };
     },
     subscriptions: {
       keepAlive: 1000,
-      onConnect: async (connectionParams, websocket, context) => {
+      onConnect: async (connectionParams) => {
         console.log("WS Connected");
-        return context;
+        // TODO: extract token in a better manner, Authorization field is not a good option
+        const token = (connectionParams as any).Authorization?.split(' ')[1];
+        const player = await Container.get(AuthService).findUser(token);
+
+        if (!player) {
+          throw new AuthenticationError(`Can't parse token! Please sign-up!`)
+        }
+        return { player };
       },
-      onDisconnect: (websocket, context) => {
+      onDisconnect: (_, context) => {
         console.log("WS Disconnected");
-      }
+      },
+      path: '/subscriptions'
     }
   });
 
-  app.use(server.graphqlPath, isAuth);
-  app.use(server.graphqlPath, attachUser);
   server.applyMiddleware({ app });
 
-  const httpServer = http.createServer(app);
+  const httpServer = createServer(app);
   server.installSubscriptionHandlers(httpServer);
 
-
-  httpServer.listen({ port: 5000 }, () => {
-    console.log(
-      `🚀 Server ready at http://localhost:500${server.graphqlPath}`
-    );
-    console.log(
-      `🚀 Subscriptions ready at ws://localhost:5000${
-        server.subscriptionsPath
-      }`
-    );
+  httpServer.listen(config.port, () => {
+    console.log(`HTTP Server ready at http://localhost:${config.port}${server.graphqlPath}`);
+    console.log(`Subscriptions ready at ws://localhost:${config.port}${server.subscriptionsPath}`);
   });
 }

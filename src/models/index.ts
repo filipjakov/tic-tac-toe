@@ -1,9 +1,9 @@
-import { User } from './user.model';
+import { Player } from './player.model';
 import { Game } from './game.model';
 import { Move } from './move.model';
 
 export {
-  User,
+  Player,
   Game,
   Move,
 }

@@ -1,7 +1,6 @@
 import "reflect-metadata";
 
 import express, { NextFunction } from 'express';
-import config from './config';
 
 async function startServer(): Promise<void> {
   const app = express();
@@ -32,10 +31,6 @@ async function startServer(): Promise<void> {
         message: err.message,
       },
     });
-  });
-  
-  app.listen(config.port || 4000, () => {
-    console.log(`Server is ready at ${config.port || 4000} !`);
   });
 }
 

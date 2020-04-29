@@ -1,8 +1,38 @@
-type Query {
-  helloWorld: String!
+enum GameType {
+  SINGLE,
+  MULTI
 }
 
-type User {
+enum MoveType {
+  TOP_LEFT,
+  TOP_CENTER,
+  TOP_RIGHT,
+  MIDDLE_LEFT,
+  MIDDLE_CENTER,
+  MIDDLE_RIGHT,
+  BOTTOM_LEFT,
+  BOTTOM_CENTER,
+  BOTTOM_RIGHT
+}
+
+type Query {
+  user(id: String!): Player
+  users: [Player]
+  game(id: String!): Game
+  games: [Game]
+}
+
+type Subscription {
+  game(gameId: ID!): Game
+}
+
+type Mutation {
+  createGame(type: GameType!): Game
+  joinGame(id: Int!): Game
+  makeMove(gameId: Int!, newMove: MoveType!): Move
+}
+
+type Player {
   id: ID!
   name: String!
   games: [Game!]!
@@ -10,12 +40,16 @@ type User {
 
 type Game {
   id: ID!
-  type: String!
-  players: [User!]!
+  type: GameType!
+  status: String!
+  currentPlayer: ID!
+  players: [Player!]!
   moves: [Move!]!
 }
 
 type Move {
   id: ID!
-  type: [Int!]!
+  type: MoveType!
+  player: Player!
+  game: Game!
 }

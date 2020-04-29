@@ -1,7 +1,7 @@
 import Container from "typedi";
 import { createConnection } from "typeorm";
 import config from "../config";
-import { Game, Move, User } from "../models";
+import { Game, Move, Player } from "../models";
 
 export default async () => {
   try {
@@ -9,9 +9,9 @@ export default async () => {
       type: 'sqlite',
       name: 'memory',
       database: ':memory:',
-      logging: config.dev,
+      logging: config.dev && ['error'],
       entities: [
-        User,
+        Player,
         Game,
         Move
       ],

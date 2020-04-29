@@ -1,8 +1,8 @@
-import { BaseEntity, PrimaryGeneratedColumn, ManyToMany, Entity, Column, OneToMany, JoinTable, JoinColumn, ManyToOne, CreateDateColumn, UpdateDateColumn, OneToOne } from "typeorm";
-import { Player } from "./player.model";
-import { Move } from "./move.model";
-import { GameType } from "../enums/game-type.enum";
+import { BaseEntity, Column, CreateDateColumn, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { GameStatus } from "../enums/game-status.enum";
+import { GameType } from "../enums/game-type.enum";
+import { Move } from "./move.model";
+import { Player } from "./player.model";
 
 @Entity({
   orderBy: {

@@ -20,7 +20,6 @@ export default async () => {
 
     Container.set('db.connection', connection);
   } catch (e) {
-    console.error(e);
     throw new Error('Could not create connection to database!')
   }
 }

@@ -1,8 +1,8 @@
 import { Inject, Service } from "typedi";
 import { Connection } from "typeorm";
-import PlayerService from "./player.service";
-import { Player, Game } from "../models";
+import { Game, Player } from "../models";
 import GameService from "./game.service";
+import PlayerService from "./player.service";
 
 @Service()
 export default class BotService {

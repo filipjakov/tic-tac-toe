@@ -1,16 +1,17 @@
-import expressLoader from './express';
 import apolloLoader from './apollo';
+import expressLoader from './express';
+import Logger from './logger';
 import typeORMLoader from './typeorm';
 
 export default async ({ app }: { app: any }) => {
   await typeORMLoader();
-  console.log('ORM loaded!');
+  Logger.info('ORM loaded!');
 
   await expressLoader({ app })
-  console.log('Express loaded!');
+  Logger.info('Express loaded!');
 
   await apolloLoader({ app });
-  console.log('Apollo loaded!');
+  Logger.info('Apollo loaded!');
 
-  console.log('Everything loaded');
+  Logger.info('Everything loaded, setup done!');
 };

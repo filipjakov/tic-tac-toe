@@ -1,19 +1,20 @@
+import { NextFunction, Response } from 'express';
 import { Container } from 'typedi';
-import { Request, Response, NextFunction } from 'express';
+import Logger from '../../loaders/logger';
 import PlayerService from '../../services/player.service';
 
-const attachUser = async (req: Request, res: Response, next: NextFunction) => {
+const attachUser = async (req: any, res: Response, next: NextFunction) => {
   try {
-    const user = await Container.get(PlayerService).find((req as any)['token._id'] as number);
+    const user = await Container.get(PlayerService).find(req['token._id'] as number);
 
     if (!user) {
       return res.sendStatus(401);
     }
 
-    (req as any).currentUser = user;
+    req.currentUser = user;
     return next();
   } catch (e) {
-    console.error(e);
+    Logger.error('Cannot attach user to request.');
     return next(e); 
   }
 };

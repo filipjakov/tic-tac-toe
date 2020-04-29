@@ -2,8 +2,8 @@ import bodyParser from 'body-parser';
 import compression from 'compression';
 import cors from 'cors';
 import express from 'express';
-import routes from '../api';
 import Helmet from 'helmet';
+import routes from '../api';
 
 export default async ({ app }: { app: express.Application }) => {
   app.use(Helmet());

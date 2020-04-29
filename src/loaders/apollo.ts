@@ -6,6 +6,7 @@ import Container from 'typedi';
 import config from '../config';
 import schema from '../schema';
 import AuthService from '../services/auth.service';
+import Logger from './logger';
 
 export default async ({ app }: { app: Application }) => {
   const server = new ApolloServer({
@@ -32,7 +33,7 @@ export default async ({ app }: { app: Application }) => {
     subscriptions: {
       keepAlive: 1000,
       onConnect: async (connectionParams) => {
-        console.log("WS Connected");
+        Logger.info("Subscription connection!");
         // TODO: extract token in a better manner, Authorization field is not a good option
         const token = (connectionParams as any).Authorization?.split(' ')[1];
         const player = await Container.get(AuthService).findUser(token);
@@ -42,8 +43,8 @@ export default async ({ app }: { app: Application }) => {
         }
         return { player };
       },
-      onDisconnect: (_, context) => {
-        console.log("WS Disconnected");
+      onDisconnect: () => {
+        Logger.info("Subscription disconnection!");
       },
       path: '/subscriptions'
     }
@@ -55,7 +56,7 @@ export default async ({ app }: { app: Application }) => {
   server.installSubscriptionHandlers(httpServer);
 
   httpServer.listen(config.port, () => {
-    console.log(`HTTP Server ready at http://localhost:${config.port}${server.graphqlPath}`);
-    console.log(`Subscriptions ready at ws://localhost:${config.port}${server.subscriptionsPath}`);
+    Logger.info(`HTTP Server ready at http://localhost:${config.port}${server.graphqlPath}`);
+    Logger.info(`Subscriptions ready at ws://localhost:${config.port}${server.subscriptionsPath}`);
   });
 }

@@ -5,13 +5,12 @@ import { createServer } from 'http';
 import Container from 'typedi';
 import config from '../config';
 import schema from '../schema';
-import AuthService from '../services/auth.service';
+import { AuthService } from '../services/auth.service';
 import Logger from './logger';
 
 export default async ({ app }: { app: Application }) => {
   const server = new ApolloServer({
     schema,
-    validationRules: [depthLimit(5)],
     playground: config.dev,
     introspection: config.dev,
     debug: config.dev,

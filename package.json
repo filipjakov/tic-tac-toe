@@ -2,7 +2,10 @@
   "name": "tic-tac-toe",
   "version": "0.0.1",
   "description": "Superpowered tic-tac-toe with Node.js+TypeScript+GraphQL 🚀",
-  "main": "index.js",
+  "main": "dist/server.js",
+  "engines": {
+    "node": "12.x"
+  },
   "scripts": {
     "start": "node dist/server.js",
     "start:dev": "nodemon src/server.ts --exec ts-node src/server.ts -e ts,graphql",
@@ -29,7 +32,6 @@
     "express": "^4.17.1",
     "express-jwt": "^5.3.3",
     "graphql": "^15.0.0",
-    "graphql-subscriptions": "^1.1.0",
     "helmet": "^3.22.0",
     "jsonwebtoken": "^8.5.1",
     "ncp": "^2.0.0",
@@ -46,12 +48,11 @@
     "@types/express-jwt": "0.0.42",
     "@types/graphql": "^14.5.0",
     "@types/graphql-depth-limit": "^1.1.2",
+    "@types/hapi__joi": "^16.0.12",
     "@types/helmet": "0.0.46",
     "@types/jsonwebtoken": "^8.3.9",
     "@types/node": "^13.13.4",
     "cz-conventional-changelog": "^3.1.0",
-    "graphql-depth-limit": "^1.1.0",
-    "graphql-import": "^1.0.2",
     "graphql-import-node": "0.0.4",
     "husky": "^4.2.5",
     "nodemon": "^2.0.3",

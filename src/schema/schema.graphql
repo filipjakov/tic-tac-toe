@@ -17,9 +17,9 @@ enum MoveType {
 
 type Query {
   user(id: String!): Player
-  users: [Player]
+  users: [Player]!
   game(id: String!): Game
-  games: [Game]
+  games: [Game]!
 }
 
 type Subscription {

@@ -1,8 +1,8 @@
 import { Inject, Service } from "typedi";
 import { Connection } from "typeorm";
-import { CustomErrorType } from "../enums/cutom-error-type.enum";
-import { GameStatus } from "../enums/game-status.enum";
-import { GameType } from "../enums/game-type.enum";
+import { CustomErrorType } from "../abstracts/enums/cutom-error-type.enum";
+import { GameStatus } from "../abstracts/enums/game-status.enum";
+import { GameType } from "../abstracts/enums/game-type.enum";
 import { Game, Move, Player } from "../models";
 import { CustomError } from "../utils/custom-error";
 import BotService from "./bot.service";

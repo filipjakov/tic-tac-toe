@@ -1,8 +1,8 @@
 import { PubSub, withFilter } from 'apollo-server-express';
 import { IResolvers } from 'graphql-tools';
 import Container from 'typedi';
-import { GameStatus } from './enums/game-status.enum';
-import { GameType } from './enums/game-type.enum';
+import { GameStatus } from './abstracts/enums/game-status.enum';
+import { GameType } from './abstracts/enums/game-type.enum';
 import Logger from './loaders/logger';
 import { Game, Move, Player } from './models';
 import BotService from './services/bot.service';
@@ -104,7 +104,7 @@ const resolverMap: IResolvers = {
   },
   Subscription: {
     game: {
-      resolve: (payload) => payload,
+      resolve: payload => payload,
       subscribe: withFilter(
         () => pubsub.asyncIterator(topic),
         (payload: Game, { gameId }) => {

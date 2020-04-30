@@ -1,4 +1,4 @@
-import { CustomErrorType } from "../enums/cutom-error-type.enum";
+import { CustomErrorType } from "../abstracts/enums/cutom-error-type.enum";
 import { ApolloError, ValidationError, UserInputError } from "apollo-server-express";
 
 export class CustomError extends Error {

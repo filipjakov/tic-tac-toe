@@ -1,6 +1,6 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { GameStatus } from "../enums/game-status.enum";
-import { GameType } from "../enums/game-type.enum";
+import { GameStatus } from "../abstracts/enums/game-status.enum";
+import { GameType } from "../abstracts/enums/game-type.enum";
 import { Move } from "./move.model";
 import { Player } from "./player.model";
 

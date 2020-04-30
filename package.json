@@ -1,7 +1,7 @@
 {
   "name": "tic-tac-toe",
   "version": "0.0.1",
-  "description": "Superpowered tic-tac-toe with Node.js+TypeScript+GraphQL 🚀",
+  "description": "🚀 Superpowered tic-tac-toe with Node.js+TypeScript+GraphQL 🚀",
   "main": "dist/server.js",
   "engines": {
     "node": "12.x"
@@ -9,6 +9,7 @@
   "scripts": {
     "start": "node dist/server.js",
     "start:dev": "nodemon src/server.ts --exec ts-node src/server.ts -e ts,graphql",
+    "start:dev_verbose": "DEBUG=express:* npm run start:dev",    
     "build": "tsc -p . && ncp src/schema dist/schema"
   },
   "repository": {

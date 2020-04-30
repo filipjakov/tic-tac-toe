@@ -31,30 +31,25 @@ const resolverMap: IResolvers = {
   },
   Query: {
     async user(_, { id }): Promise<Player | null>  {
-      const userService = Container.get(PlayerService);
-      return await userService.find(id) ?? null;
+      return await Container.get(PlayerService).find(id) ?? null;
     },
     async users(): Promise<Player[]> {
-      const userService = Container.get(PlayerService);
-      return await userService.findAll();
+      return await Container.get(PlayerService).findAll();
     },
     async game(_, { id }): Promise<Game | null> {
-      const gameService = Container.get(GameService);
-      return await gameService.find(id) ?? null;
+      return await Container.get(GameService).find(id) ?? null;
     },
     async games(): Promise<Game[]> {
-      const gameService = Container.get(GameService);
-      return await gameService.findAll();
+      return await Container.get(GameService).findAll();
     }
   },
   Mutation: {
     async createGame(_, { type: gameType }, context): Promise<Game> {
-      const { id: playerId, name } = context.player as Player;
-      const gameService = Container.get(GameService);
-
       try {
-        const game = await gameService.create({ playerId, gameType });
-        Logger.info(`User ${name} created the game: ${game.id} of type: ${gameType}`);
+        const { id: playerId, name } = context.player as Player;
+
+        const game = await Container.get(GameService).create({ playerId, gameType });
+        Logger.info(`User ${name} created the game: ${game.id} of type: ${game.type}`);
         return game;
       } catch (e) {
         Logger.error(e);
@@ -62,10 +57,11 @@ const resolverMap: IResolvers = {
       }
     },
     async joinGame(_, { id: gameId }, context): Promise<Game> {
-      const { id: playerId, name } = context.player as Player;
       try {
+        const { id: playerId, name } = context.player as Player;
+
         const game = await Container.get(GameService).join({ playerId, gameId });
-        Logger.info(`User ${name} joined the game: ${gameId}`);
+        Logger.info(`User ${name} joined the game: ${game.id}`);
 
         pubsub.publish(topic, game);
         return game;
@@ -94,11 +90,11 @@ const resolverMap: IResolvers = {
         // Schedule bot's move after the current event-loop cycle
         setImmediate(async () => {
           const botService = Container.get(BotService);
-          const { id } = await botService.findOrCreateBot();
+          const { id: botId } = await botService.findOrCreateBot();
           const optimalMove = await botService.findOptimalMove(gameId);
-          const move = await gameService.move({ playerId: id, gameId, newMove: optimalMove });
+          const botMove = await gameService.move({ playerId: botId, gameId, newMove: optimalMove });
 
-          pubsub.publish(topic, move.game);
+          pubsub.publish(topic, botMove.game);
           Logger.info(`Bot made a move: ${optimalMove}`);
         });
       } 

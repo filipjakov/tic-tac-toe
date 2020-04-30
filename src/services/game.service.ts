@@ -36,6 +36,7 @@ export class GameService {
     game.status = gameType === GameType.SINGLE ? GameStatus.IN_PROGRESS : GameStatus.WAITING_FOR_PLAYER_TO_JOIN;
     game.players = [
       player,
+      // Conditionally add the bot if it is a single player game
       ...(gameType === GameType.SINGLE ? [await this.botService.findOrCreateBot()] : [])
     ];
     game.currentPlayer = player.id;
@@ -61,7 +62,7 @@ export class GameService {
     }
 
     if(game.type === GameType.SINGLE) {
-      throw new CustomError(`Can't join a singleplayer game!`, CustomErrorType.ILLEGAL_MOVE);
+      throw new CustomError(`Can't join a singleplayer game: ${gameId}!`, CustomErrorType.ILLEGAL_MOVE);
     }
 
     if(game.players.length === 2) {
@@ -88,7 +89,7 @@ export class GameService {
     const game = player.games.find(({ id }) => id === gameId);
 
     if (!game) {
-      throw new CustomError(`Can't make move on a non-existing game ${gameId}!`, CustomErrorType.NO_OBJECT);
+      throw new CustomError(`Can't make move on a game that does not exist or was not joined ${gameId}!`, CustomErrorType.NO_OBJECT);
     }
 
     if (game.status === GameStatus.DONE || game.status === GameStatus.TIE) {
@@ -100,7 +101,7 @@ export class GameService {
     }
 
     if (game.currentPlayer !== playerId) {
-      throw new CustomError(`Illegal move, not turn of user ${playerId}!`, CustomErrorType.ILLEGAL_MOVE);
+      throw new CustomError(`Illegal move, not turn of user ${player.name}!`, CustomErrorType.ILLEGAL_MOVE);
     }
 
     if(game.moves.some(({ type }) => type === newMove)) {
@@ -109,12 +110,11 @@ export class GameService {
 
     const move = new Move();
     move.type = newMove;
-    // Swap to other player
     move.game = game;
     move.player = player;
   
-    game.status = this.checkGameStatus([...game.moves, move]);
     game.moves = [...game.moves, move];
+    game.status = this.checkGameStatus(game.moves);
 
     // Set the turn for other player if game is still not over
     // Otherwise, currentPlayer field will contain the id of the winner (current player)

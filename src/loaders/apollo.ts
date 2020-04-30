@@ -1,6 +1,5 @@
 import { ApolloServer, AuthenticationError } from 'apollo-server-express';
 import { Application } from 'express';
-import depthLimit from 'graphql-depth-limit';
 import { createServer } from 'http';
 import Container from 'typedi';
 import config from '../config';

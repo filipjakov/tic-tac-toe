@@ -9,7 +9,7 @@
   "scripts": {
     "start": "node dist/server.js",
     "start:dev": "nodemon src/server.ts --exec ts-node src/server.ts -e ts,graphql",
-    "start:dev_verbose": "DEBUG=express:* npm run start:dev",    
+    "start:dev_verbose": "DEBUG=express:* npm run start:dev",
     "build": "tsc -p . && ncp src/schema dist/schema"
   },
   "repository": {

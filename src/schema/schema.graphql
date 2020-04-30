@@ -16,14 +16,14 @@ enum MoveType {
 }
 
 type Query {
-  user(id: String!): Player
+  user(id: Int!): Player
   users: [Player]!
-  game(id: String!): Game
+  game(id: Int!): Game
   games: [Game]!
 }
 
 type Subscription {
-  game(gameId: ID!): Game
+  game(gameId: Int!): Game
 }
 
 type Mutation {

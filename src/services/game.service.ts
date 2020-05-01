@@ -117,7 +117,7 @@ export class GameService {
     game.status = this.checkGameStatus(game.moves);
 
     // Set the turn for other player if game is still not over
-    // Otherwise, currentPlayer field will contain the id of the winner (current player)
+    // If game is DONE/WON, currentPlayer field will contain the id of the winner (current player)
     if (game.status !== GameStatus.DONE) {
       game.currentPlayer = (game.players.find(({ id }) => id !== playerId) as Player).id;
     }
@@ -127,6 +127,9 @@ export class GameService {
 
   private checkGameStatus(moves: Move[]): GameStatus {
     // Flatten all the moves, populate the index with player id
+    // An array of length 9 is created:
+    //  - index represents type of the move
+    //  - value represents the id of the player who made the move 
     const flatMoves: Array<number> = moves
       .map(({ player: { id }, type }) => [id, type])
       .reduce((acc, [id, type]) => {
@@ -135,23 +138,24 @@ export class GameService {
       }, Array.from({ length: 9 }));
 
     const winningConditions = [
-      [0, 1, 2],
+      [0, 1, 2], // Rows
       [3, 4, 5],
       [6, 7, 8],
-      [0, 3, 6],
+      [0, 3, 6], // Columns
       [1, 4, 7],
       [2, 5, 8],
-      [0, 4, 8],
+      [0, 4, 8], // Diagonals
       [6, 4, 2]
     ];
 
     for (let condition of winningConditions) {
+      // Extract moves made for a winning condition
       const allMoves = condition.map(i => flatMoves[i]);
 
-      const allWinningMovesDefined = allMoves.every(Boolean);
+      const allMovesDefined = allMoves.every(Boolean);
       const allMovesBelongToOnePlayer = allMoves.every((val, _, arr) => val === arr[0]);
 
-      if (allWinningMovesDefined && allMovesBelongToOnePlayer) {
+      if (allMovesDefined && allMovesBelongToOnePlayer) {
         return GameStatus.DONE;
       };
     }

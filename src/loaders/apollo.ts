@@ -32,7 +32,7 @@ export default async ({ app }: { app: Application }) => {
       keepAlive: 1000,
       onConnect: async (connectionParams) => {
         Logger.info("Subscription connection!");
-        // TODO: extract token in a better manner, Authorization field is not a good option
+        // TODO: extract token in a better manner, hardcoding Authorization field is not a viable option
         const token = (connectionParams as any).Authorization?.split(' ')[1];
         const player = await Container.get(AuthService).findUser(token);
 

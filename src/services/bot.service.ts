@@ -30,7 +30,7 @@ export default class BotService {
 
     const currentMoves = (bot?.games.find(({ id }) => gameId === id) as Game).moves.map(({ type }) => type);
     const availableMoves = Array.from({ length: 9 }, (_, i) => i).filter(i => !currentMoves.includes(i));
-    const optimalMove = Math.floor(Math.random() * availableMoves.length);
+    const optimalMove = Math.floor(Math.random() * availableMoves.length); // TODO: better heuristics
 
     return availableMoves[optimalMove];
   }

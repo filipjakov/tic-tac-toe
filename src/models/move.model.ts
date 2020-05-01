@@ -6,7 +6,8 @@ import { Player } from "./player.model";
   orderBy: {
     id: 'ASC'
   }
-})export class Move extends BaseEntity {
+})
+export class Move extends BaseEntity {
   @PrimaryGeneratedColumn({
     unsigned: true
   })

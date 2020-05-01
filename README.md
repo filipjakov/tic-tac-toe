@@ -78,6 +78,8 @@ Before any type of game is started, a user/player must "sign-up". A jwt is gener
 }
 ```
 
+- if you want to check info about your user/player, ping `/users/me` with the token set in the headers
+
 1. Creating a game:
 
 - user sends the type of the game (`schema.graphql` -> `GameType`)
@@ -118,8 +120,29 @@ Before any type of game is started, a user/player must "sign-up". A jwt is gener
 - after a mutation is made (new move), the updated game gets sent via subscriptions to all the listeners
 - by providing the gameId on the Subscription of interest (`game(id:$id)`), the listener gets the `Game` object everytime it gets updated (a move is made)
 
+## APIs
+(check schema for further info)
+
+1. Queries:
+  1. Get user by id
+  2. Get all users
+  3. Get game by id
+  4. Get all games
+
+2. Mutations:
+  1. Create game with provided type
+  2. Join game with provided id
+  3. Make a move for game (with provided id)
+
+3. Subscriptions:
+  1. Get the whole game state on every move change
+
+4. Express Router APIs:
+  1. `/auth/signup` - generate token and save user for provided user name
+  2. `/users/me` - get information about the user with correct token set in the header
+
 ## Remarks
 
-- [x] for single player, AI moves can be random (better implementation is a plus) -> random
+- [x] for single player, AI moves can be random (better implementation is a plus) -> currently implemented as random
 - [x] usage of database is not needed (but make a system where it can be easily added in the future) - `TypeORM`+ `sqlite:memory`
 - [x] try to create a meaningful logging system -> `winston`

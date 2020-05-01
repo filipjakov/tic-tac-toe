@@ -123,21 +123,21 @@ Before any type of game is started, a user/player must "sign-up". A jwt is gener
 ## APIs
 (check schema for further info)
 
-1. Queries:
+* Queries:
   1. Get user by id
   2. Get all users
   3. Get game by id
   4. Get all games
 
-2. Mutations:
+* Mutations:
   1. Create game with provided type
   2. Join game with provided id
   3. Make a move for game (with provided id)
 
-3. Subscriptions:
+* Subscriptions:
   1. Get the whole game state on every move change
 
-4. Express Router APIs:
+* Express Router APIs:
   1. `/auth/signup` - generate token and save user for provided user name
   2. `/users/me` - get information about the user with correct token set in the header
 

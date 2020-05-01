@@ -68,7 +68,7 @@ Most of file structure revolves around the express server dynamics (the addition
 
 Before any type of game is started, a user/player must "sign-up". A jwt is generated on the provided name. IF successfully decoded, (with the extracted user id) a user gets fetched from the db and attached to the request or to the context (apollo). That is done in the following way:
 
-- a request must be made to `/auth/signup` and `name` property must be defined in the body of the request (`application/json`)
+- a POST request must be made to `/auth/signup` and `name` property must be defined in the body of the request (`application/json`)
 - a token will be recieved as a response
 - (if using **GraphQL Playground**) the token must be pasted in the **HTTP HEADERS** (bottom left, near **QUERY VARIABLES**) section in the following manner (to do either queries, mutations, or subscriptions):
 

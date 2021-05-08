@@ -39,7 +39,7 @@
     "reflect-metadata": "^0.1.13",
     "sqlite3": "^4.1.1",
     "typedi": "^0.8.0",
-    "typeorm": "^0.2.24",
+    "typeorm": "^0.2.25",
     "winston": "^3.2.1"
   },
   "devDependencies": {

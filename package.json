@@ -34,7 +34,7 @@
     "express-jwt": "^5.3.3",
     "graphql": "^15.0.0",
     "helmet": "^3.22.0",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "ncp": "^2.0.0",
     "reflect-metadata": "^0.1.13",
     "sqlite3": "^4.1.1",
